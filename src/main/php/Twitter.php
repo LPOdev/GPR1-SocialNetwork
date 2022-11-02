@@ -8,35 +8,76 @@ require 'IObservable.php';
 
 class Twitter implements IObservable
 {
-    public function __construct(array $observers = null){}
-
-    public function subscribe(array $observers):void
+    private $observers;
+    private $twits;
+    
+    public function __construct(array $observers = null, array $twits = null)
+    {
+        $this->observers = $observers;
+        $this->twits = $twits;
+    }
+    
+    public function subscribe(array $observers): void
+    {
+        $this->setObservers($observers);
+        
+    }
+    
+    public function unsubscribe(IObserver $observer): void
     {
         throw new RuntimeException();
     }
-
-    public function unsubscribe(IObserver $observer):void
+    
+    public function notifyObservers(): void
     {
-        throw new RuntimeException();
+        throw new EmptyListOfSubscribersException();
     }
-
-    public function notifyObservers():void
+    
+    public function getObservers(): array
     {
-        throw new RuntimeException();
+        if ($this->observers == null) {
+            $this->observers = [];
+        }
+        return $this->observers;
     }
-
-    public function getObservers():array
+    
+    public function setObservers($observers): array
     {
-        throw new RuntimeException();
+        if ($this->observers == null) {
+            $this->observers = $observers;
+        } else {
+            $this->observers[] = $observers;
+        }
+        return $this->observers;
     }
-
-    public function getTwits():array
+    
+    public function getTwits(): array
     {
-        throw new RuntimeException();
+        if ($this->twits == null) {
+            $this->twits = [];
+        }
+        return $this->twits;
+    }
+    
+    public function setTwits($twits): array
+    {
+        $this->twits = $twits;
+        return $this->twits;
     }
 }
 
-class TwitterException extends RuntimeException { }
-class EmptyListOfSubscribersException extends TwitterException { }
-class SubscriberAlreadyExistsException extends TwitterException { }
-class SubscriberNotFoundException extends TwitterException { }
+class TwitterException extends RuntimeException
+{
+}
+
+class EmptyListOfSubscribersException extends TwitterException
+{
+}
+
+class SubscriberAlreadyExistsException extends TwitterException
+{
+}
+
+class SubscriberNotFoundException extends TwitterException
+{
+}
